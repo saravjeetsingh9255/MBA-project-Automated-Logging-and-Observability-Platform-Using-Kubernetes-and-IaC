@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: reportapi
+  namespace: perfmonitor
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: reportapi
+
+  template:
+    metadata:
+      labels:
+        app: reportapi
+
+    spec:
+      containers:
+      - name: reportapi
+        image: reportapi:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080

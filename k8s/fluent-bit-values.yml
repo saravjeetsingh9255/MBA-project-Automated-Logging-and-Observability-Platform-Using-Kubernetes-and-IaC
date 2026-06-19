@@ -1,0 +1,40 @@
+config:
+  service: |
+    [SERVICE]
+        Flush        1
+        Log_Level    info
+        Daemon       off
+        Parsers_File parsers.conf
+
+  inputs: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/containers/*.log
+        Parser            cri
+        Tag               kube.*
+        Refresh_Interval  5
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+
+  filters: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Merge_Log           On
+        Keep_Log            Off
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+
+  outputs: |
+    [OUTPUT]
+        Name            es
+        Match           kube.*
+        Host            perfmonitor-es-es-http.logging.svc.cluster.local
+        Port            9200
+        HTTP_User       elastic
+        HTTP_Passwd     YYZ90IUb60yn6v64meK64t8H
+        TLS             On
+        TLS.Verify      Off
+        Logstash_Format On
+        Logstash_Prefix kubernetes
+        Retry_Limit     False
